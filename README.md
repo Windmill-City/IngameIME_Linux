@@ -1,6 +1,6 @@
 # IngameIME_Win32
 
-A library for Text Service Framework(TSF) & Input Method Manager(IMM)
+A library for X Input Method(XIM) & Wayland Input Method(Wayland IM)
 
 ## How to use?
 

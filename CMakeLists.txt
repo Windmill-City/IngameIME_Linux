@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
-project(IngameIME-Win32)
+project(IngameIME-Linux)
 
 set(CMAKE_CXX_STANDARD 17)
 
