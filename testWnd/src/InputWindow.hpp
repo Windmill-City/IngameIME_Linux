@@ -6,7 +6,11 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 
-#define GLFW_EXPOSE_NATIVE_WIN32
+#ifdef X11
+#    define GLFW_EXPOSE_NATIVE_X11
+#else
+#    define GLFW_EXPOSE_NATIVE_WAYLAND
+#endif
 #include <GLFW/glfw3native.h>
 
 #include "IngameIME.hpp"
