@@ -1,4 +1,4 @@
-# IngameIME_Win32
+# IngameIME_Linux
 
 A library for X Input Method(XIM) & Wayland Input Method(Wayland IM)
 
