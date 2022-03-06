@@ -5,7 +5,7 @@
 
 std::string format(const char* pMessage, ...)
 {
-    va_list args = NULL;
+    va_list args;
     va_start(args, pMessage);
 
     char buf[256];
@@ -20,7 +20,7 @@ std::string format(const char* pMessage, ...)
 
 std::wstring format(const wchar_t* pMessage, ...)
 {
-    va_list args = NULL;
+    va_list args;
     va_start(args, pMessage);
 
     wchar_t buf[256];
