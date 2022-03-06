@@ -17,3 +17,13 @@ See [IngameIME-Common](https://github.com/Windmill-City/IngameIME-Common)
 * Get and Set active `InputProcessor`
 
 * Get `PreEdit` and `CandidateList` infomation during the `Composition`
+
+## Reference
+
+### X Input Method
+
+* <https://www.x.org/releases/current/doc/libX11/libX11/libX11.html#Locales_and_Internationalized_Text_Functions>
+
+### Wayland Input Method
+
+* <https://wayland.app/protocols/text-input-unstable-v3>

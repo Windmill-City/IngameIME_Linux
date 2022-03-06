@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 project(IngameIME-Linux)
 
 set(CMAKE_CXX_STANDARD 17)
+find_package(X11 REQUIRED)
 
 # Appends the cmake/modules path to MAKE_MODULE_PATH variable.
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
@@ -16,19 +17,28 @@ message(STATUS "Build version: ${VERSION}")
 
 include(IngameIME-Common/IngameIME.cmake)
 
-set(include_dir ${CMAKE_CURRENT_SOURCE_DIR}/src/include)
+set(include_dir
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/include/wl
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/include/x11
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/include
+    ${X11_INCLUDE_DIR})
 set(source_file ${CMAKE_CURRENT_SOURCE_DIR}/src/IngameIMEImpl.cpp ${version_file})
 
 IngameIME_add_library(IngameIME_Static STATIC ${source_file})
 IngameIME_add_library(IngameIME_Shared SHARED ${source_file})
-target_include_directories(IngameIME_Static PRIVATE ${include_dir})
-target_include_directories(IngameIME_Shared PRIVATE ${include_dir})
+target_include_directories(IngameIME_Static PRIVATE "${include_dir}")
+target_include_directories(IngameIME_Shared PRIVATE "${include_dir}")
+target_link_libraries(IngameIME_Static PRIVATE ${X11_LIBRARIES})
+target_link_libraries(IngameIME_Shared PRIVATE ${X11_LIBRARIES})
+
+# Test Window
+add_subdirectory(testWnd testWnd)
 
 # Install
-install(TARGETS IngameIME_Static IngameIME_Shared PUBLIC_HEADER)
+install(TARGETS IngameIME_Static IngameIME_Shared testWnd PUBLIC_HEADER)
 
 # Pack
-set(CPACK_PACKAGE_FILE_NAME ${CMAKE_PROJECT_NAME}-${CMAKE_VS_PLATFORM_NAME}-${VERSION})
+set(CPACK_PACKAGE_FILE_NAME ${CMAKE_PROJECT_NAME}-${CMAKE_GENERATOR_PLATFORM}-${VERSION})
 set(CPACK_PACKAGE_VENDOR "Windmill_City")
 set(CPACK_PACKAGE_CHECKSUM "SHA1")
 set(CPACK_GENERATOR "ZIP")
@@ -36,6 +46,3 @@ set(CPACK_GENERATOR "ZIP")
 set(CPACK_PACKAGE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/pack)
 
 include(CPack)
-
-# Test Window
-add_subdirectory(testWnd testWnd)
