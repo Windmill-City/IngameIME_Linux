@@ -14,7 +14,7 @@ std::string format(const char* pMessage, ...)
     va_end(args);
 
     if (len < 0) throw std::runtime_error("Failed to format message!");
-
+  
     auto result = std::string(buf, len);
 
     return result;
