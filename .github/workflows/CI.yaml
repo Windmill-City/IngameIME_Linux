@@ -26,8 +26,10 @@ jobs:
           # Fetch all to make git describe work correctly
           fetch-depth: 0
 
-      - name: Install ECM
-        run: sudo apt install -y extra-cmake-modules
+      - name: Install Dependencies
+        run: |
+          sudo apt install -y libwayland-dev libxkbcommon-dev wayland-protocols extra-cmake-modules
+          sudo apt install xorg-dev
 
       - name: Setup CMake
         run: cmake -B build

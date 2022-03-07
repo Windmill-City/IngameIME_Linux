@@ -15,13 +15,17 @@ void error_callback(int error, const char* description)
 int main()
 {
     glfwSetErrorCallback(error_callback);
+
+#ifdef DISPLAY_SERVER_X11
+    glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
+#else
+    glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
+#endif
+
     if (glfwInit()) {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-        // Must set the locale first to make mbstowcs work correctly
-        setlocale(LC_CTYPE, "");
 
         try {
             auto window = std::make_unique<InputWindow>();
