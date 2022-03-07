@@ -16,8 +16,8 @@ jobs:
   build:
     strategy:
       matrix:
-        target: [win32, x64, arm64]
-    runs-on: windows-latest
+        target: [x64, x86]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
