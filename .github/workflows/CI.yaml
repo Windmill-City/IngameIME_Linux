@@ -46,5 +46,5 @@ jobs:
           generate_release_notes: true
 
           # Publish Packed files
-          files: build/pack/*.zip
+          files: build/pack/*.{zip|sha1}
           fail_on_unmatched_files: true
