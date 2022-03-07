@@ -72,10 +72,10 @@ class InputWindow {
 
         // Create InputContext
 #ifdef DISPLAY_SERVER_X11
-        inputCtx = IngameIME::Global::getInstance(glfwGetX11Display())
+        inputCtx = IngameIME::Global::getInstance(reinterpret_cast<void*>(false), glfwGetX11Display())
                        .getInputContext(reinterpret_cast<void*>(glfwGetX11Window(window)));
 #else
-        inputCtx = IngameIME::Global::getInstance(glfwGetWaylandDisplay())
+        inputCtx = IngameIME::Global::getInstance(reinterpret_cast<void*>(true), glfwGetWaylandDisplay())
                        .getInputContext(reinterpret_cast<void*>(glfwGetWaylandWindow(window)));
 #endif
 

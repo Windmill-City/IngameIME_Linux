@@ -51,10 +51,16 @@ libwl::InputContextImpl::InputContextImpl(zwp_text_input_manager_v3* mgr, wl_sea
     comp      = std::make_shared<CompositionImpl>(this);
 }
 
-IngameIME::Global& IngameIME::Global::getInstance(void* display, ...)
+IngameIME::Global& IngameIME::Global::getInstance(void* is_wayland, ...)
 {
+    va_list args;
+    va_start(args, is_wayland);
+
     thread_local IngameIME::Global& Instance =
-        // (IngameIME::Global&)*new libxim::GlobalImpl(reinterpret_cast<Display*>(display));
-        (IngameIME::Global&)*new libwl::GlobalImpl(reinterpret_cast<wl_display*>(display));
+        is_wayland ? (IngameIME::Global&)*new libwl::GlobalImpl(va_arg(args, wl_display*)) :
+                     (IngameIME::Global&)*new libxim::GlobalImpl(va_arg(args, Display*));
+
+    va_end(args);
+
     return Instance;
 }

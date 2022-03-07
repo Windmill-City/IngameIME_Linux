@@ -24,11 +24,7 @@ namespace libxim {
             this->locale   = locale;
 
             name = format("[XIM: %08x]", xim);
-        }
-
-        ~InputProcessorImpl()
-        {
-            if (xim) XCloseIM(xim);
+            XCloseIM(xim);
         }
 
       public:
