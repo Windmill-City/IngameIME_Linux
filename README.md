@@ -30,13 +30,15 @@ See [IngameIME-Common](https://github.com/Windmill-City/IngameIME-Common)
 
 ## Limitations
 
-### XIM Protocol
+### XIM or Wayland IM
 
-* Composition::terminate() has no effect
 * Can not fetch CandidateList
-* Can not get Commit string in callback
-* Global::getActiveInputProcessor will return different pointer for the same input method
 * Global::getInputProcessors just return the active inputprocessor
 * Can not fetch the localized name of the inputprocessor
 * Cab not fetch the localized name of the locale
 * InputProcessor::setActivated() has no effect
+* No inputprocessor change notify callback nor input modes
+
+### XIM
+
+* No Commit notify callback

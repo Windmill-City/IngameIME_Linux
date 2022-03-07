@@ -1,4 +1,5 @@
 #pragma once
+#include <math.h>
 #include <memory>
 #include <string>
 
@@ -35,13 +36,17 @@ namespace libxim {
             auto inputCtx = reinterpret_cast<InputContextImpl*>(client_data);
 
             inputCtx->ctx.selStart = inputCtx->ctx.selEnd = call_data->caret;
-            if (call_data->text->encoding_is_wchar)
-                inputCtx->ctx.content = std::wstring(call_data->text->string.wide_char, call_data->text->length);
-            else {
-                wchar_t buf[64];
-                swprintf(buf, sizeof(buf), L"%s", call_data->text->string.multi_byte);
-                inputCtx->ctx.content = std::wstring(buf, call_data->text->length);
+            if (call_data->text->encoding_is_wchar) {
+                auto str = std::wstring(call_data->text->string.wide_char, call_data->text->length);
+
+                char buf[64];
+                wcstombs(buf, str.c_str(), std::min(str.length(), (size_t)63));
+
+                inputCtx->ctx.content = buf;
             }
+            else
+
+                inputCtx->ctx.content = std::string(call_data->text->string.multi_byte, call_data->text->length);
 
             inputCtx->comp->IngameIME::PreEditCallbackHolder::runCallback(IngameIME::CompositionState::Update,
                                                                           &inputCtx->ctx);
@@ -80,7 +85,10 @@ namespace libxim {
          */
         virtual void terminate() noexcept override
         {
-            // XIM no support this operation
+            if (inputCtx->activated) {
+                XUnsetICFocus(inputCtx->xic);
+                XSetICFocus(inputCtx->xic);
+            }
         }
     };
 }// namespace libxim

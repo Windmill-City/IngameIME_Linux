@@ -3,10 +3,10 @@
 
 #include "FormatUtil.hpp"
 
-// #include "WlCompositionImpl.hpp"
+#include "WlCompositionImpl.hpp"
 #include "XCompositionImpl.hpp"
 
-// #include "WlIngameIMEImpl.hpp"
+#include "WlIngameIMEImpl.hpp"
 #include "XIngameIMEImpl.hpp"
 
 libxim::InputContextImpl::InputContextImpl(Display* display, Window window) : display(display), window(window)
@@ -44,8 +44,17 @@ libxim::InputContextImpl::InputContextImpl(Display* display, Window window) : di
     XSetICValues(xic, XNClientWindow, window, XNFocusWindow, window, NULL);
 }
 
-IngameIME::Global& IngameIME::Global::getInstance()
+libwl::InputContextImpl::InputContextImpl(zwp_text_input_manager_v3* mgr, wl_seat* seat, wl_surface* surface)
+    : surface(surface)
 {
-    thread_local IngameIME::Global& Instance = (IngameIME::Global&)*new libxim::GlobalImpl();
+    textInput = zwp_text_input_manager_v3_get_text_input(mgr, seat);
+    comp      = std::make_shared<CompositionImpl>(this);
+}
+
+IngameIME::Global& IngameIME::Global::getInstance(void* display, ...)
+{
+    thread_local IngameIME::Global& Instance =
+        // (IngameIME::Global&)*new libxim::GlobalImpl(reinterpret_cast<Display*>(display));
+        (IngameIME::Global&)*new libwl::GlobalImpl(reinterpret_cast<wl_display*>(display));
     return Instance;
 }

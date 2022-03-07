@@ -8,6 +8,12 @@
 
 namespace libxim {
     class GlobalImpl : public IngameIME::Global {
+      protected:
+        Display* display;
+
+      public:
+        GlobalImpl(Display* display) : display(display) {}
+
       public:
         /**
          * @brief Get Active InputProcessor
@@ -16,10 +22,8 @@ namespace libxim {
          */
         virtual std::shared_ptr<const IngameIME::InputProcessor> getActiveInputProcessor() const override
         {
-            // Get default display
-            auto display = XOpenDisplay(NULL);
-            auto xim     = XOpenIM(display, NULL, NULL, NULL);
-            return std::make_shared<InputProcessorImpl>(xim);
+            static auto inputProcessor = std::make_shared<InputProcessorImpl>(XOpenIM(display, NULL, NULL, NULL));
+            return inputProcessor;
         }
 
         /**
@@ -42,12 +46,9 @@ namespace libxim {
          * @param hWnd the window to create InputContext
          * @return std::shared_ptr<InputContext>
          */
-        virtual std::shared_ptr<IngameIME::InputContext> getInputContext(void* display, ...) override
+        virtual std::shared_ptr<IngameIME::InputContext> getInputContext(void* window, ...) override
         {
-            va_list args;
-            va_start(args, display);
-            auto ctx = std::make_shared<InputContextImpl>(reinterpret_cast<Display*>(display), va_arg(args, Window));
-            va_end(args);
+            auto ctx = std::make_shared<InputContextImpl>(display, reinterpret_cast<Window>(window));
             return ctx;
         }
     };
