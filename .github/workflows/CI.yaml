@@ -25,8 +25,8 @@ jobs:
           submodules: true
           # Fetch all to make git describe work correctly
           fetch-depth: 0
-        
-        name: Install ECM
+
+      - name: Install ECM
         run: apt install extra-cmake-modules
 
       - name: Setup CMake
