@@ -4,7 +4,7 @@ project(IngameIME-Linux)
 set(CMAKE_CXX_STANDARD 17)
 
 # ECM - Extra CMake Modules
-find_package(ECM REQUIRED)
+find_package(ECM REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_FIND_MODULE_DIR})
 
 # X11
