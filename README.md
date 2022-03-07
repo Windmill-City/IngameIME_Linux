@@ -30,7 +30,7 @@ See [IngameIME-Common](https://github.com/Windmill-City/IngameIME-Common)
 
 ## Limitations
 
-### XIM or Wayland IM
+### XIM & Wayland IM
 
 * Can not fetch CandidateList
 * Global::getInputProcessors just return the active inputprocessor
