@@ -4,9 +4,14 @@
 #include <stdexcept>
 
 #include <glad/glad.h>
-#include <glfw/glfw3.h>
 
-#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3.h>
+
+#ifdef DISPLAY_SERVER_X11
+#    define GLFW_EXPOSE_NATIVE_X11
+#else
+#    define GLFW_EXPOSE_NATIVE_WAYLAND
+#endif
 #include <GLFW/glfw3native.h>
 
 #include "IngameIME.hpp"
@@ -20,11 +25,11 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void debugShowInputProcessor(std::shared_ptr<const IngameIME::InputProcessor> proc)
 {
-    wprintf(L"[%S][%wS][%wS]: %wS\n",
-            proc->type == IngameIME::InputProcessorType::KeyboardLayout ? "KL" : "TIP",
-            proc->locale->locale.c_str(),
-            proc->locale->name.c_str(),
-            proc->name.c_str());
+    printf("[%s][%s][%s]: %s\n",
+           proc->type == IngameIME::InputProcessorType::KeyboardLayout ? "KL" : "TIP",
+           proc->locale->locale.c_str(),
+           proc->locale->name.c_str(),
+           proc->name.c_str());
 }
 
 class InputWindow {
@@ -66,24 +71,30 @@ class InputWindow {
         printf("IngameIME Library Version: %s\n", IngameIME::Global::Version.c_str());
 
         // Create InputContext
-        inputCtx = IngameIME::Global::getInstance().getInputContext(glfwGetWin32Window(window));
+#ifdef DISPLAY_SERVER_X11
+        inputCtx = IngameIME::Global::getInstance(reinterpret_cast<void*>(false), glfwGetX11Display())
+                       .getInputContext(reinterpret_cast<void*>(glfwGetX11Window(window)));
+#else
+        inputCtx = IngameIME::Global::getInstance(reinterpret_cast<void*>(true), glfwGetWaylandDisplay())
+                       .getInputContext(reinterpret_cast<void*>(glfwGetWaylandWindow(window)));
+#endif
 
         // Register callbacks
         inputCtx->comp->IngameIME::PreEditCallbackHolder::setCallback([this](auto&& state, auto&& ctx) {
             switch (state) {
-                case IngameIME::CompositionState::Begin: wprintf(L"Composition Begin!\n"); break;
+                case IngameIME::CompositionState::Begin: printf("Composition Begin!\n"); break;
                 case IngameIME::CompositionState::Update:
-                    wprintf(L"Composition Update!\n");
-                    wprintf(L"PreEdit: %wS\n", ctx->content.c_str());
-                    wprintf(L"Sel: %d-%d\n", ctx->selStart, ctx->selEnd);
+                    printf("Composition Update!\n");
+                    printf("PreEdit: %s\n", ctx->content.c_str());
+                    printf("Sel: %d-%d\n", ctx->selStart, ctx->selEnd);
                     break;
-                case IngameIME::CompositionState::End: wprintf(L"Composition End\n"); break;
+                case IngameIME::CompositionState::End: printf("Composition End\n"); break;
             }
         });
 
         inputCtx->comp->IngameIME::CommitCallbackHolder::setCallback([this](auto&& commit) {
             // Show commit
-            wprintf(L"Commit: %wS\n", commit.c_str());
+            printf("Commit: %s\n", commit.c_str());
         });
 
         inputCtx->comp->IngameIME::PreEditRectCallbackHolder::setCallback([this](auto&& rect) {
@@ -91,45 +102,46 @@ class InputWindow {
             rect.top    = 20;
             rect.right  = 20;
             rect.bottom = 20;
-            wprintf(L"Update PreEditRect\n");
+            printf("Update PreEditRect\n");
         });
 
         inputCtx->comp->IngameIME::CandidateListCallbackHolder::setCallback([this](auto&& state, auto&& ctx) {
             switch (state) {
-                case IngameIME::CandidateListState::Begin: wprintf(L"CandidateList Begin!\n"); break;
+                case IngameIME::CandidateListState::Begin: printf("CandidateList Begin!\n"); break;
                 case IngameIME::CandidateListState::Update:
-                    wprintf(L"CandidateList Update!\n");
-                    wprintf(L"Selection: %d\n", ctx->selection);
-                    for (auto&& cand : ctx->candidates) { wprintf(L"%wS\n", cand.c_str()); }
+                    printf("CandidateList Update!\n");
+                    printf("Selection: %d\n", ctx->selection);
+                    for (auto&& cand : ctx->candidates) { printf("%s\n", cand.c_str()); }
                     break;
-                case IngameIME::CandidateListState::End: wprintf(L"CandidateList End!\n"); break;
+                case IngameIME::CandidateListState::End: printf("CandidateList End!\n"); break;
             }
         });
 
         IngameIME::Global::getInstance().setCallback([this](auto&& state, auto&& ctx) {
             switch (state) {
-                case IngameIME::InputProcessorState::FullUpdate: wprintf(L"InputProcessor Full Update!\n"); break;
+                case IngameIME::InputProcessorState::FullUpdate: printf("InputProcessor Full Update!\n"); break;
                 case IngameIME::InputProcessorState::InputModeUpdate:
-                    wprintf(L"InputProcessor InputMode Update!\n");
+                    printf("InputProcessor InputMode Update!\n");
                     break;
             }
 
             debugShowInputProcessor(ctx.proc);
 
-            wprintf(L"InputModes:\n");
-            for (auto&& mode : ctx.modes) { wprintf(L"%wS\n", mode.c_str()); }
+            printf("InputModes:\n");
+            for (auto&& mode : ctx.modes) { printf("%s\n", mode.c_str()); }
         });
 
-        wprintf(L"Active InputProc:\n");
+        printf("Active InputProc:\n");
         initialProc = IngameIME::Global::getInstance().getActiveInputProcessor();
         debugShowInputProcessor(initialProc);
 
-        wprintf(L"InputProcs:\n");
+        printf("InputProcs:\n");
         for (auto proc : IngameIME::Global::getInstance().getInputProcessors()) { debugShowInputProcessor(proc); }
 
-        wprintf(L"Press F5 to switch on/off InputContext\n");
-        wprintf(L"Press F11 to switch on/off fullscreen\n");
-        wprintf(L"Press F3 to activate the InputProcessor recored when inital\n");
+        printf("Press F3 to activate the InputProcessor recored when inital\n");
+        printf("Press F5 to switch on/off InputContext\n");
+        printf("Press F7 to terminate composition\n");
+        printf("Press F11 to switch on/off fullscreen\n");
     }
 
   public:
@@ -148,7 +160,7 @@ class InputWindow {
         // Update FullScreen state
         inputCtx->setFullScreen(fullscreen);
 
-        wprintf(L"FullScreen:%wS\n", fullscreen ? L"True" : L"False");
+        printf("FullScreen:%s\n", fullscreen ? "True" : "False");
 
         auto monitor = glfwGetPrimaryMonitor();
         int  monitorWidth, monitorHeight;
@@ -168,14 +180,23 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
     // Close Window
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) { glfwSetWindowShouldClose(window, GLFW_TRUE); }
+
     // Switch Fullscreen
     if (glfwGetKey(window, GLFW_KEY_F11) == GLFW_PRESS) { InputWindow::getByGLFWwindow(window)->switchFullScreen(); }
+
     // Switch Activate
     if (glfwGetKey(window, GLFW_KEY_F5) == GLFW_PRESS) {
         auto inputCtx = InputWindow::getByGLFWwindow(window)->inputCtx;
         inputCtx->setActivated(!inputCtx->getActivated());
-        wprintf(L"Activated:%wS\n", inputCtx->getActivated() ? L"True" : L"False");
+        printf("Activated:%s\n", inputCtx->getActivated() ? "True" : "False");
     }
+
+    // Terminate Composition
+    if (glfwGetKey(window, GLFW_KEY_F7) == GLFW_PRESS) {
+        InputWindow::getByGLFWwindow(window)->inputCtx->comp->terminate();
+        printf("Terminated Composition!\n");
+    }
+
     // Activate Initial InputProc
     if (glfwGetKey(window, GLFW_KEY_F3) == GLFW_PRESS) {
         InputWindow::getByGLFWwindow(window)->initialProc->setActivated();

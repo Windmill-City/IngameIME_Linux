@@ -17,3 +17,28 @@ See [IngameIME-Common](https://github.com/Windmill-City/IngameIME-Common)
 * Get and Set active `InputProcessor`
 
 * Get `PreEdit` and `CandidateList` infomation during the `Composition`
+
+## Reference
+
+### X Input Method
+
+* <https://www.x.org/releases/current/doc/libX11/libX11/libX11.html#Locales_and_Internationalized_Text_Functions>
+
+### Wayland Input Method
+
+* <https://wayland.app/protocols/text-input-unstable-v3>
+
+## Limitations
+
+### XIM or Wayland IM
+
+* Can not fetch CandidateList
+* Global::getInputProcessors just return the active inputprocessor
+* Can not fetch the localized name of the inputprocessor
+* Cab not fetch the localized name of the locale
+* InputProcessor::setActivated() has no effect
+* No inputprocessor change notify callback nor input modes
+
+### XIM
+
+* No Commit notify callback

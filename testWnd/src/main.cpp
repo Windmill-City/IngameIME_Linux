@@ -2,7 +2,8 @@
 #include <string>
 
 #include <glad/glad.h>
-#include <glfw/glfw3.h>
+
+#include <GLFW/glfw3.h>
 
 #include "InputWindow.hpp"
 
@@ -19,8 +20,8 @@ int main()
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        // Set locale to the system active for wprintf
-        setlocale(LC_ALL, "");
+        // Must set the locale first to make mbstowcs work correctly
+        setlocale(LC_CTYPE, "");
 
         try {
             auto window = std::make_unique<InputWindow>();

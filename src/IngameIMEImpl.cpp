@@ -1,67 +1,66 @@
 #include <stdarg.h>
+#include <stdexcept>
 
-#include "IngameIME.hpp"
+#include "FormatUtil.hpp"
 
-#include "CompositionImpl.hpp"
-#include "InputProcessorImpl.hpp"
+#include "WlCompositionImpl.hpp"
+#include "XCompositionImpl.hpp"
 
-namespace libxim {
-    class GlobalImpl : public IngameIME::Global {
-      public:
-        /**
-         * @brief Get Active InputProcessor
-         *
-         * @return std::shared_ptr<InputProcessor>
-         */
-        virtual std::shared_ptr<const IngameIME::InputProcessor> getActiveInputProcessor() const override {}
+#include "WlIngameIMEImpl.hpp"
+#include "XIngameIMEImpl.hpp"
 
-        /**
-         * @brief Get system availiable InputProcessor
-         *
-         * @return std::list<std::shared_ptr<InputProcessor>>
-         */
-        virtual std::list<std::shared_ptr<const IngameIME::InputProcessor>> getInputProcessors() const override {}
-
-        /**
-         * @brief Get the InputContext object
-         *
-         * @param hWnd the window to create InputContext
-         * @return std::shared_ptr<InputContext>
-         */
-        virtual std::shared_ptr<IngameIME::InputContext> getInputContext(void* hWnd, ...) override {}
-    };
-}// namespace libxim
-
-namespace libwl {
-    class GlobalImpl : public IngameIME::Global {
-      public:
-        /**
-         * @brief Get Active InputProcessor
-         *
-         * @return std::shared_ptr<InputProcessor>
-         */
-        virtual std::shared_ptr<const IngameIME::InputProcessor> getActiveInputProcessor() const override {}
-
-        /**
-         * @brief Get system availiable InputProcessor
-         *
-         * @return std::list<std::shared_ptr<InputProcessor>>
-         */
-        virtual std::list<std::shared_ptr<const IngameIME::InputProcessor>> getInputProcessors() const override {}
-
-        /**
-         * @brief Get the InputContext object
-         *
-         * @param hWnd the window to create InputContext
-         * @return std::shared_ptr<InputContext>
-         */
-        virtual std::shared_ptr<IngameIME::InputContext> getInputContext(void* hWnd, ...) override {}
-    };
-}// namespace libwl
-
-IngameIME::Global& IngameIME::Global::getInstance()
+libxim::InputContextImpl::InputContextImpl(Display* display, Window window) : display(display), window(window)
 {
+    comp = std::make_shared<CompositionImpl>(this);
+
+    if (xic) XDestroyIC(xic);
+    if (xim) XCloseIM(xim);
+
+    if (!(xim = XOpenIM(display, NULL, NULL, NULL))) throw std::runtime_error("No input method could be opened!");
+
+    XIMCallback cbPreeditStart{(XPointer)this, (XIMProc)CompositionImpl::PreeditStartCallback};
+    XIMCallback cbPreeditDraw{(XPointer)this, (XIMProc)CompositionImpl::PreeditDrawCallback};
+    XIMCallback cbPreeditCaret{(XPointer)this, (XIMProc)CompositionImpl::PreeditCaretCallback};
+    XIMCallback cbPreeditDone{(XPointer)this, (XIMProc)CompositionImpl::PreeditDoneCallback};
+    xic = XCreateIC(xim,
+                    XNInputStyle,
+                    XIMPreeditCallbacks | XIMStatusNothing,
+                    XNPreeditStartCallback,
+                    cbPreeditStart,
+                    XNPreeditDrawCallback,
+                    cbPreeditDraw,
+                    XNPreeditCaretCallback,
+                    cbPreeditCaret,
+                    XNPreeditDoneCallback,
+                    cbPreeditDone,
+                    NULL);
+    if (!xic) {
+        XIMCallback cbGeometry{(XPointer)this, (XIMProc)CompositionImpl::GeometryCallback};
+        xic = XCreateIC(xim, XNInputStyle, XIMPreeditArea | XIMStatusNothing, XNGeometryCallback, cbGeometry, NULL);
+    }
+    if (!xic) xic = XCreateIC(xim, XNInputStyle, XIMPreeditNothing | XIMStatusNothing, NULL);
+    if (!xic) throw std::runtime_error("Failed to create Input Context!");
+
+    XSetICValues(xic, XNClientWindow, window, XNFocusWindow, window, NULL);
+}
+
+libwl::InputContextImpl::InputContextImpl(zwp_text_input_manager_v3* mgr, wl_seat* seat, wl_surface* surface)
+    : surface(surface)
+{
+    textInput = zwp_text_input_manager_v3_get_text_input(mgr, seat);
+    comp      = std::make_shared<CompositionImpl>(this);
+}
+
+IngameIME::Global& IngameIME::Global::getInstance(void* is_wayland, ...)
+{
+    va_list args;
+    va_start(args, is_wayland);
+
     thread_local IngameIME::Global& Instance =
-        false ? (IngameIME::Global&)*new libxim::GlobalImpl() : (IngameIME::Global&)*new libwl::GlobalImpl();
+        is_wayland ? (IngameIME::Global&)*new libwl::GlobalImpl(va_arg(args, wl_display*)) :
+                     (IngameIME::Global&)*new libxim::GlobalImpl(va_arg(args, Display*));
+
+    va_end(args);
+
     return Instance;
 }
