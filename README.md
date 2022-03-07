@@ -1,4 +1,4 @@
-# IngameIME_Linux
+# IngameIME_Linux ![CI Status](https://github.com/Windmill-City/IngameIME_Linux/actions/workflows/CI.yaml/badge.svg)
 
 A library for X Input Method(XIM) & Wayland Input Method(Wayland IM)
 
