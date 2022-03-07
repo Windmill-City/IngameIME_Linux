@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install ECM
-        run: apt install extra-cmake-modules
+        run: sudo apt install -y extra-cmake-modules
 
       - name: Setup CMake
         run: cmake -B build
