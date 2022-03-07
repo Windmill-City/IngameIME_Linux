@@ -49,10 +49,10 @@ target_link_libraries(IngameIME_Static PRIVATE ${X11_LIBRARIES} ${Wayland_LIBRAR
 target_link_libraries(IngameIME_Shared PRIVATE ${X11_LIBRARIES} ${Wayland_LIBRARIES})
 
 # Test Window
-add_subdirectory(testWnd testWnd)
+add_subdirectory(testWnd)
 
 # Install
-install(TARGETS IngameIME_Static IngameIME_Shared testWnd PUBLIC_HEADER)
+install(TARGETS IngameIME_Static IngameIME_Shared testWnd_x11 testWnd_wl PUBLIC_HEADER)
 
 # Pack
 set(CPACK_PACKAGE_FILE_NAME ${CMAKE_PROJECT_NAME}-${CMAKE_GENERATOR_PLATFORM}-${VERSION})

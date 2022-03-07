@@ -154,6 +154,7 @@ class InputWindow {
             glfwPollEvents();
         }
     }
+
     void switchFullScreen()
     {
         fullscreen = !fullscreen;
@@ -174,7 +175,7 @@ class InputWindow {
     }
 };
 
-std::map<GLFWwindow*, InputWindow*> InputWindow::WindowMap = std::map<GLFWwindow*, InputWindow*>();
+std::map<GLFWwindow*, InputWindow*> InputWindow::WindowMap = {};
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
