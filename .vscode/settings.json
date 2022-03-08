@@ -88,6 +88,7 @@
         "random": "cpp",
         "string_view": "cpp",
         "ranges": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "numbers": "cpp"
     }
 }
