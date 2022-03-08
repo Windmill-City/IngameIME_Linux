@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 # ECM - Extra CMake Modules
 find_package(ECM REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${ECM_FIND_MODULE_DIR})
+set(CMAKE_MODULE_PATH ${ECM_FIND_MODULE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
 # X11
 find_package(X11 REQUIRED)
@@ -18,9 +18,6 @@ find_package(WaylandScanner REQUIRED)
 ecm_add_wayland_client_protocol(source_file
                                 PROTOCOL "${WaylandProtocols_DATADIR}/unstable/text-input/text-input-unstable-v3.xml"
                                 BASENAME text-input)
-
-# Appends the cmake/modules path to MAKE_MODULE_PATH variable.
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
 include(GetGitRevisionDescription)
 git_describe(VERSION --tags --dirty=-dirty)
