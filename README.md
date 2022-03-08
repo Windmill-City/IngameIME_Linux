@@ -39,6 +39,7 @@ See [IngameIME-Common](https://github.com/Windmill-City/IngameIME-Common)
 * InputProcessor::setActivated() has no effect
 * No inputprocessor change notify callback nor input modes
 
-### XIM
+### XIM (deprecated on XWayland Environment)
 
 * No Commit notify callback
+* No PreEdit & PreEditRect callback (Only tested on XWayland Environvent)
