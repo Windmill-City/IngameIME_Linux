@@ -14,11 +14,11 @@ namespace libwl {
             type = IngameIME::InputProcessorType::TextService;
 
             auto locale    = std::make_shared<IngameIME::Locale>();
-            locale->locale = setlocale(LC_CTYPE, "");
-            locale->name   = format("[locale: %s", locale->locale.c_str());
+            locale->locale = convert(setlocale(LC_ALL, ""));
+            locale->name   = format(L"[locale: %ls", locale->locale.c_str());
             this->locale   = locale;
 
-            name = "[Wayland IM]";
+            name = L"[Wayland IM]";
         }
 
       public:

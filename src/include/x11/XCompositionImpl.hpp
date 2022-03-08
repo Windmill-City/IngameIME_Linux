@@ -37,16 +37,12 @@ namespace libxim {
 
             inputCtx->ctx.selStart = inputCtx->ctx.selEnd = call_data->caret;
             if (call_data->text->encoding_is_wchar) {
-                auto str = std::wstring(call_data->text->string.wide_char, call_data->text->length);
-
-                char buf[64];
-                wcstombs(buf, str.c_str(), std::min(str.length(), (size_t)63));
-
-                inputCtx->ctx.content = buf;
+                inputCtx->ctx.content = std::wstring(call_data->text->string.wide_char, call_data->text->length);
             }
             else
 
-                inputCtx->ctx.content = std::string(call_data->text->string.multi_byte, call_data->text->length);
+                inputCtx->ctx.content =
+                    convert(std::string(call_data->text->string.multi_byte, call_data->text->length));
 
             inputCtx->comp->IngameIME::PreEditCallbackHolder::runCallback(IngameIME::CompositionState::Update,
                                                                           &inputCtx->ctx);

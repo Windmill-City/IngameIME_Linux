@@ -6,7 +6,7 @@
 #include "IngameIME.hpp"
 #include "InputProcessor.hpp"
 
-#include "FormatUtil.hpp"
+#include "StringUtil.hpp"
 
 namespace libxim {
     class InputProcessorImpl : public IngameIME::InputProcessor {
@@ -19,11 +19,11 @@ namespace libxim {
             type = IngameIME::InputProcessorType::TextService;
 
             auto locale    = std::make_shared<IngameIME::Locale>();
-            locale->locale = XLocaleOfIM(xim);
-            locale->name   = format("[locale: %s]", locale->locale.c_str());
+            locale->locale = convert(XLocaleOfIM(xim));
+            locale->name   = format(L"[locale: %s]", locale->locale.c_str());
             this->locale   = locale;
 
-            name = format("[XIM: %08x]", xim);
+            name = format(L"[XIM: %08x]", xim);
             XCloseIM(xim);
         }
 

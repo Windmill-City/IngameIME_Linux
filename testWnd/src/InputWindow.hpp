@@ -25,7 +25,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void debugShowInputProcessor(std::shared_ptr<const IngameIME::InputProcessor> proc)
 {
-    printf("[%s][%s][%s]: %s\n",
+    printf("[%s][%ls][%ls]: %ls\n",
            proc->type == IngameIME::InputProcessorType::KeyboardLayout ? "KL" : "TIP",
            proc->locale->locale.c_str(),
            proc->locale->name.c_str(),
@@ -85,7 +85,7 @@ class InputWindow {
                 case IngameIME::CompositionState::Begin: printf("Composition Begin!\n"); break;
                 case IngameIME::CompositionState::Update:
                     printf("Composition Update!\n");
-                    printf("PreEdit: %s\n", ctx->content.c_str());
+                    printf("PreEdit: %ls\n", ctx->content.c_str());
                     printf("Sel: %d-%d\n", ctx->selStart, ctx->selEnd);
                     break;
                 case IngameIME::CompositionState::End: printf("Composition End\n"); break;
@@ -94,7 +94,7 @@ class InputWindow {
 
         inputCtx->comp->IngameIME::CommitCallbackHolder::setCallback([this](auto&& commit) {
             // Show commit
-            printf("Commit: %s\n", commit.c_str());
+            printf("Commit: %ls\n", commit.c_str());
         });
 
         inputCtx->comp->IngameIME::PreEditRectCallbackHolder::setCallback([this](auto&& rect) {
@@ -111,7 +111,7 @@ class InputWindow {
                 case IngameIME::CandidateListState::Update:
                     printf("CandidateList Update!\n");
                     printf("Selection: %d\n", ctx->selection);
-                    for (auto&& cand : ctx->candidates) { printf("%s\n", cand.c_str()); }
+                    for (auto&& cand : ctx->candidates) { printf("%ls\n", cand.c_str()); }
                     break;
                 case IngameIME::CandidateListState::End: printf("CandidateList End!\n"); break;
             }
@@ -128,7 +128,7 @@ class InputWindow {
             debugShowInputProcessor(ctx.proc);
 
             printf("InputModes:\n");
-            for (auto&& mode : ctx.modes) { printf("%s\n", mode.c_str()); }
+            for (auto&& mode : ctx.modes) { printf("%ls\n", mode.c_str()); }
         });
 
         printf("Active InputProc:\n");

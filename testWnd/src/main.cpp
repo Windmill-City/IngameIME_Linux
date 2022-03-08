@@ -27,6 +27,9 @@ int main()
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+        // Must call once to set active locale
+        setlocale(LC_ALL, "");
+
         try {
             auto window = std::make_unique<InputWindow>();
             window->runEventLoop();

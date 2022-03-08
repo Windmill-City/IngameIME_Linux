@@ -66,7 +66,7 @@ namespace libwl {
             auto comp = reinterpret_cast<CompositionImpl*>(data);
 
             if (text) {
-                comp->ctx.first.content  = text;
+                comp->ctx.first.content  = convert(text);
                 comp->ctx.first.selStart = cursor_begin;
                 comp->ctx.first.selEnd   = cursor_end;
                 comp->ctx.second         = true;
@@ -104,7 +104,7 @@ namespace libwl {
             }
 
             if (comp->commit.second) {
-                comp->IngameIME::CommitCallbackHolder::runCallback(comp->commit.first);
+                comp->IngameIME::CommitCallbackHolder::runCallback(convert(comp->commit.first));
                 comp->commit.second = false;
             }
         }

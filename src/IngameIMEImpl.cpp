@@ -1,7 +1,7 @@
 #include <stdarg.h>
 #include <stdexcept>
 
-#include "FormatUtil.hpp"
+#include "StringUtil.hpp"
 
 #include "WlCompositionImpl.hpp"
 #include "XCompositionImpl.hpp"
