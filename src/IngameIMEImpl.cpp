@@ -4,10 +4,13 @@
 #include "StringUtil.hpp"
 
 #include "WlCompositionImpl.hpp"
-#include "XCompositionImpl.hpp"
-
 #include "WlIngameIMEImpl.hpp"
+
+#include "XCompositionImpl.hpp"
 #include "XIngameIMEImpl.hpp"
+
+#include "dCompositionImpl.hpp"
+#include "dIngameIMEImpl.hpp"
 
 libxim::InputContextImpl::InputContextImpl(Display* display, Window window) : display(display), window(window)
 {

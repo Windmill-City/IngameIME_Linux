@@ -1,7 +1,17 @@
 cmake_minimum_required(VERSION 3.18)
 project(IngameIME-Linux)
 
+###########################
+# Compiler flags
+###########################
+
 set(CMAKE_CXX_STANDARD 17)
+
+###########################
+# Find Packages
+###########################
+
+find_package(PkgConfig REQUIRED)
 
 # ECM - Extra CMake Modules
 find_package(ECM REQUIRED NO_MODULE)
@@ -19,6 +29,15 @@ ecm_add_wayland_client_protocol(source_file
                                 PROTOCOL "${WaylandProtocols_DATADIR}/unstable/text-input/text-input-unstable-v3.xml"
                                 BASENAME text-input)
 
+# DBus
+pkg_check_modules(DBus REQUIRED dbus-1)
+message(STATUS "DBus Include dirs: ${DBus_INCLUDE_DIRS}")
+message(STATUS "DBus Libraries: ${DBus_LIBRARIES}")
+
+###########################
+# Get Version String
+###########################
+
 include(GetGitRevisionDescription)
 git_describe(VERSION --tags --dirty=-dirty)
 
@@ -27,26 +46,40 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/version.cpp.in
 set(version_file ${CMAKE_CURRENT_BINARY_DIR}/version.cpp)
 message(STATUS "Build version: ${VERSION}")
 
-include(IngameIME-Common/IngameIME.cmake)
+###########################
+# Build files
+###########################
 
 set(include_dir
+    ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/include/wl
     ${CMAKE_CURRENT_SOURCE_DIR}/src/include/x11
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/include/dbusfrontend
     ${CMAKE_CURRENT_SOURCE_DIR}/src/include
+    ${DBus_INCLUDE_DIRS}
     ${X11_INCLUDE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
     ${WAYLAND_INCLUDE_DIRS})
 set(source_file ${CMAKE_CURRENT_SOURCE_DIR}/src/IngameIMEImpl.cpp ${version_file} ${source_file})
 
+###########################
+# Targets
+###########################
+
+# Library Target
+include(IngameIME-Common/IngameIME.cmake)
 IngameIME_add_library(IngameIME_Static STATIC ${source_file})
 IngameIME_add_library(IngameIME_Shared SHARED ${source_file})
 target_include_directories(IngameIME_Static PRIVATE "${include_dir}")
 target_include_directories(IngameIME_Shared PRIVATE "${include_dir}")
-target_link_libraries(IngameIME_Static PRIVATE ${X11_LIBRARIES} ${Wayland_LIBRARIES})
-target_link_libraries(IngameIME_Shared PRIVATE ${X11_LIBRARIES} ${Wayland_LIBRARIES})
+target_link_libraries(IngameIME_Static PRIVATE ${X11_LIBRARIES} ${Wayland_LIBRARIES} ${DBus_LIBRARIES})
+target_link_libraries(IngameIME_Shared PRIVATE ${X11_LIBRARIES} ${Wayland_LIBRARIES} ${DBus_LIBRARIES})
 
 # Test Window
 add_subdirectory(testWnd)
+
+###########################
+# Packaging
+###########################
 
 # Install
 install(TARGETS IngameIME_Static IngameIME_Shared testWnd_x11 testWnd_wl PUBLIC_HEADER)

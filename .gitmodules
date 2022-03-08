@@ -10,3 +10,7 @@
 [submodule "ibus"]
 	path = ibus
 	url = git@github.com:ibus/ibus.git
+[submodule "git@github.com:Windmill-City/IngameIME-Common.git"]
+	url = IngameIME-Common
+[submodule "git@github.com:glfw/glfw.git"]
+	url = testWnd/glfw
