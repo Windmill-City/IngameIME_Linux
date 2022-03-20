@@ -27,6 +27,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          sudo apt-get update
           sudo apt install -y libwayland-dev libxkbcommon-dev wayland-protocols extra-cmake-modules xorg-dev
 
       - name: Setup CMake
