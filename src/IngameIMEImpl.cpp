@@ -3,14 +3,14 @@
 
 #include "StringUtil.hpp"
 
+#include "dCompositionImpl.hpp"
+#include "dIngameIMEImpl.hpp"
+
 #include "WlCompositionImpl.hpp"
 #include "WlIngameIMEImpl.hpp"
 
 #include "XCompositionImpl.hpp"
 #include "XIngameIMEImpl.hpp"
-
-#include "dCompositionImpl.hpp"
-#include "dIngameIMEImpl.hpp"
 
 libxim::InputContextImpl::InputContextImpl(Display* display, Window window) : display(display), window(window)
 {
@@ -60,8 +60,9 @@ IngameIME::Global& IngameIME::Global::getInstance(void* is_wayland, ...)
     va_start(args, is_wayland);
 
     thread_local IngameIME::Global& Instance =
-        is_wayland ? (IngameIME::Global&)*new libwl::GlobalImpl(va_arg(args, wl_display*)) :
-                     (IngameIME::Global&)*new libxim::GlobalImpl(va_arg(args, Display*));
+        // is_wayland ? (IngameIME::Global&)*new libwl::GlobalImpl(va_arg(args, wl_display*)) :
+        //  (IngameIME::Global&)*new libxim::GlobalImpl(va_arg(args, Display*));
+        *new libdbus::GlobalImpl();
 
     va_end(args);
 

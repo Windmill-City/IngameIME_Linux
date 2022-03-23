@@ -1,14 +1,21 @@
 #pragma once
+#include "simppl/dispatcher.h"
 
 #include "IngameIME.hpp"
 
+#include "FcitxService.hpp"
 #include "dInputProcessorImpl.hpp"
 
 namespace libdbus {
     class GlobalImpl : public IngameIME::Global {
       protected:
+        DBusConnection* dbusConn;
+
       public:
-        GlobalImpl() {}
+        GlobalImpl()
+        {
+            simppl::dbus::enable_threads();
+        }
 
         ~GlobalImpl() {}
 
