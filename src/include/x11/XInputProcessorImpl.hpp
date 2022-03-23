@@ -23,7 +23,7 @@ namespace libxim {
             locale->name   = format(L"[locale: %s]", locale->locale.c_str());
             this->locale   = locale;
 
-            name = format(L"[XIM: %08x]", xim);
+            name = L"[XIM]";
             XCloseIM(xim);
         }
 
