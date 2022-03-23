@@ -35,11 +35,11 @@ See [IngameIME-Common](https://github.com/Windmill-City/IngameIME-Common)
 * Can not fetch CandidateList
 * Global::getInputProcessors just return the active inputprocessor
 * Can not fetch the localized name of the inputprocessor
-* Cab not fetch the localized name of the locale
+* Can not fetch the localized name of the locale
 * InputProcessor::setActivated() has no effect
 * No inputprocessor change notify callback nor input modes
 
 ### XIM (deprecated on XWayland Environment)
 
 * No Commit notify callback
-* No PreEdit & PreEditRect callback (Only tested on XWayland Environvent)
+* No PreEdit & PreEditRect callback (Such function has implemented, but it takes no effect on XWayland Env)
