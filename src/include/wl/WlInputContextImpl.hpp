@@ -11,6 +11,8 @@ namespace libwl {
         wl_surface*        surface;
         zwp_text_input_v3* textInput;
 
+        bool focusing{false};
+
         bool activated{false};
         bool fullscreen{false};
 
@@ -33,13 +35,15 @@ namespace libwl {
         {
             this->activated = activated;
 
-            if (activated)
-                zwp_text_input_v3_enable(textInput);
-            else
-                zwp_text_input_v3_disable(textInput);
+            if (focusing) {
+                if (activated)
+                    zwp_text_input_v3_enable(textInput);
+                else
+                    zwp_text_input_v3_disable(textInput);
 
-            // Apply status change
-            zwp_text_input_v3_commit(textInput);
+                // Apply status change
+                zwp_text_input_v3_commit(textInput);
+            }
         }
         /**
          * @brief Get if InputContext activated

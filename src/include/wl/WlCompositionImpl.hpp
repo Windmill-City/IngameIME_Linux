@@ -30,23 +30,28 @@ namespace libwl {
         {
             auto comp = reinterpret_cast<CompositionImpl*>(data);
 
-            if (comp->inputCtx->activated) {
-                zwp_text_input_v3_enable(comp->inputCtx->textInput);
+            if (comp->inputCtx->surface == surface) {
+                comp->inputCtx->focusing = true;
 
-                // Refresh content type on focus change
-                zwp_text_input_v3_set_content_type(
-                    comp->inputCtx->textInput,
-                    zwp_text_input_v3_content_hint::ZWP_TEXT_INPUT_V3_CONTENT_HINT_NONE,
-                    zwp_text_input_v3_content_purpose::ZWP_TEXT_INPUT_V3_CONTENT_PURPOSE_NORMAL);
+                if (comp->inputCtx->activated) {
+                    zwp_text_input_v3_enable(comp->inputCtx->textInput);
 
-                // Refresh PreEditRect position on focus change
-                comp->refreshPreEditRect();
+                    // Refresh content type on focus change
+                    zwp_text_input_v3_set_content_type(
+                        comp->inputCtx->textInput,
+                        zwp_text_input_v3_content_hint::ZWP_TEXT_INPUT_V3_CONTENT_HINT_NONE,
+                        zwp_text_input_v3_content_purpose::ZWP_TEXT_INPUT_V3_CONTENT_PURPOSE_NORMAL);
+
+                    // Refresh PreEditRect position on focus change
+                    comp->refreshPreEditRect();
+                }
             }
         }
 
         static void onLeave(void* data, struct zwp_text_input_v3* zwp_text_input_v3, struct wl_surface* surface)
         {
-            // Nothing to do
+            auto comp = reinterpret_cast<CompositionImpl*>(data);
+            if (comp->inputCtx->surface == surface) comp->inputCtx->focusing = false;
         }
 
         static void onDeleteSurrounding(void*                     data,
