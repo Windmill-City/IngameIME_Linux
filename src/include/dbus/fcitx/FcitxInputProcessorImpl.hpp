@@ -8,7 +8,7 @@
 
 #include "FcitxService.hpp"
 
-namespace IngameIME::dbus {
+namespace IngameIME::dbus::fcitx {
     struct InternalLocale : public Locale
     {
       protected:
@@ -43,7 +43,7 @@ namespace IngameIME::dbus {
     std::map<std::wstring, std::weak_ptr<const InternalLocale>> InternalLocale::WeakRefs = {};
 
     using namespace org::fcitx;
-    class FcitxInputProcessor : public InputProcessor {
+    class InputProcessorImpl : public InputProcessor {
       protected:
         struct CompareInputMethodInfo
         {
@@ -52,7 +52,7 @@ namespace IngameIME::dbus {
                 return s1.uniqueName.compare(s2.uniqueName) < 0;
             }
         };
-        static std::map<Fcitx::InputMethodInfo, std::weak_ptr<const FcitxInputProcessor>, CompareInputMethodInfo>
+        static std::map<Fcitx::InputMethodInfo, std::weak_ptr<const InputProcessorImpl>, CompareInputMethodInfo>
             WeakRefs;
 
       protected:
@@ -60,7 +60,7 @@ namespace IngameIME::dbus {
         Fcitx::InputMethodInfo im;
 
       public:
-        FcitxInputProcessor(Fcitx::Controller& ctrl, Fcitx::InputMethodInfo im) : ctrl(ctrl), im(im)
+        InputProcessorImpl(Fcitx::Controller& ctrl, Fcitx::InputMethodInfo im) : ctrl(ctrl), im(im)
         {
             type = im.uniqueName.compare(0, 8, "keyboard") ? InputProcessorType::KeyboardLayout :
                                                              InputProcessorType::TextService;
@@ -70,21 +70,21 @@ namespace IngameIME::dbus {
             name = convert(im.name);
         }
 
-        ~FcitxInputProcessor()
+        ~InputProcessorImpl()
         {
             WeakRefs.erase(im);
         }
 
       public:
-        static std::shared_ptr<const FcitxInputProcessor> getInputProcessor(Fcitx::Controller&     ctrl,
+        static std::shared_ptr<const InputProcessorImpl> getInputProcessor(Fcitx::Controller&     ctrl,
                                                                             Fcitx::InputMethodInfo im)
         {
             auto iter = WeakRefs.find(im);
 
-            std::shared_ptr<const FcitxInputProcessor> proc;
+            std::shared_ptr<const InputProcessorImpl> proc;
             // Create new proc if not exist or expired
             if (iter == WeakRefs.end() || !(proc = (*iter).second.lock())) {
-                proc         = std::make_shared<FcitxInputProcessor>(ctrl, im);
+                proc         = std::make_shared<InputProcessorImpl>(ctrl, im);
                 WeakRefs[im] = proc;
             }
 
@@ -98,7 +98,7 @@ namespace IngameIME::dbus {
         }
     };
     std::map<Fcitx::InputMethodInfo,
-             std::weak_ptr<const FcitxInputProcessor>,
-             FcitxInputProcessor::CompareInputMethodInfo>
-        FcitxInputProcessor::WeakRefs = {};
+             std::weak_ptr<const InputProcessorImpl>,
+             InputProcessorImpl::CompareInputMethodInfo>
+        InputProcessorImpl::WeakRefs = {};
 }// namespace libdbus

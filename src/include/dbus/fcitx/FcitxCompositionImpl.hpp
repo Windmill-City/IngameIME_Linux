@@ -2,15 +2,15 @@
 #include <memory>
 #include <string>
 
-#include "FcitxInputContext.hpp"
+#include "FcitxInputContextImpl.hpp"
 
-namespace IngameIME::dbus {
-    class FcitxCompositionImpl : public Composition {
+namespace IngameIME::dbus::fcitx {
+    class CompositionImpl : public Composition {
       protected:
-        FcitxInputContext* inputCtx;
+        InputContextImpl* inputCtx;
 
       public:
-        FcitxCompositionImpl(FcitxInputContext* inputCtx) : inputCtx(inputCtx) {}
+        CompositionImpl(InputContextImpl* inputCtx) : inputCtx(inputCtx) {}
 
       public:
         /**

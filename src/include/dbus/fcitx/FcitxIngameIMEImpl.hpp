@@ -4,11 +4,11 @@
 
 #include "IngameIME.hpp"
 
-#include "FcitxInputProcessor.hpp"
+#include "FcitxInputProcessorImpl.hpp"
 
-namespace IngameIME::dbus {
+namespace IngameIME::dbus::fcitx {
     using namespace org::fcitx;
-    class FcitxGlobal : public Global {
+    class GlobalImpl : public Global {
       protected:
         Dispatcher  disp;
         std::thread dispRunner;
@@ -17,13 +17,13 @@ namespace IngameIME::dbus {
         Fcitx::Controller ctrl{disp};
 
       public:
-        FcitxGlobal()
+        GlobalImpl()
         {
             dispRunner = std::thread([this]() { this->disp.run(); });
             dispRunner.detach();
         }
 
-        ~FcitxGlobal()
+        ~GlobalImpl()
         {
             disp.stop();
             dispRunner.join();
@@ -47,7 +47,7 @@ namespace IngameIME::dbus {
             if (iter == ims.end())
                 throw std::runtime_error(format("Active InputMethod: %s not in InputMethod List!", activeIM));
 
-            return FcitxInputProcessor::getInputProcessor(ctrl, *iter);
+            return InputProcessorImpl::getInputProcessor(ctrl, *iter);
         }
 
         /**
@@ -69,7 +69,7 @@ namespace IngameIME::dbus {
 
             for (auto&& im : ims) {
                 for (auto&& info : infos) {
-                    if (info.name == im.uniqueName) result.push_back(FcitxInputProcessor::getInputProcessor(ctrl, im));
+                    if (info.name == im.uniqueName) result.push_back(InputProcessorImpl::getInputProcessor(ctrl, im));
                 }
             }
 

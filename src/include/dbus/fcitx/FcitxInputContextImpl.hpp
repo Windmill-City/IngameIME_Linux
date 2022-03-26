@@ -4,20 +4,20 @@
 
 #include "FcitxService.hpp"
 
-namespace IngameIME::dbus {
+namespace IngameIME::dbus::fcitx {
     using namespace org::fcitx;
-    class FcitxInputContext : public InputContext {
+    class InputContextImpl : public InputContext {
       protected:
         Fcitx::InputContext ctx;
 
         bool activated{false};
         bool fullscreen{false};
 
-        friend class FcitxCompositionImpl;
+        friend class CompositionImpl;
 
       public:
-        FcitxInputContext();
-        ~FcitxInputContext()
+        InputContextImpl();
+        ~InputContextImpl()
         {
             ctx.DestroyIC();
         }
