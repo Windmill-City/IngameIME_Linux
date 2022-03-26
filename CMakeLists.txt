@@ -52,7 +52,8 @@ set(include_dir
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/include/wl
     ${CMAKE_CURRENT_SOURCE_DIR}/src/include/x11
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/include/d
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/include/dbus
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/include/dbus/fcitx
     ${CMAKE_CURRENT_SOURCE_DIR}/src/include
     ${X11_INCLUDE_DIR}
     ${WAYLAND_INCLUDE_DIRS})

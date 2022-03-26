@@ -6,8 +6,8 @@
 #include "XInputContextImpl.hpp"
 #include "XInputProcessorImpl.hpp"
 
-namespace libxim {
-    class GlobalImpl : public IngameIME::Global {
+namespace IngameIME::x {
+    class GlobalImpl : public Global {
       protected:
         Display* display;
 
@@ -20,7 +20,7 @@ namespace libxim {
          *
          * @return std::shared_ptr<InputProcessor>
          */
-        virtual std::shared_ptr<const IngameIME::InputProcessor> getActiveInputProcessor() const override
+        virtual std::shared_ptr<const InputProcessor> getActiveInputProcessor() const override
         {
             static auto inputProcessor = std::make_shared<InputProcessorImpl>(XOpenIM(display, NULL, NULL, NULL));
             return inputProcessor;
@@ -31,9 +31,9 @@ namespace libxim {
          *
          * @return std::list<std::shared_ptr<InputProcessor>>
          */
-        virtual std::list<std::shared_ptr<const IngameIME::InputProcessor>> getInputProcessors() const override
+        virtual std::list<std::shared_ptr<const InputProcessor>> getInputProcessors() const override
         {
-            std::list<std::shared_ptr<const IngameIME::InputProcessor>> result;
+            std::list<std::shared_ptr<const InputProcessor>> result;
 
             result.push_back(getActiveInputProcessor());
 
@@ -46,7 +46,7 @@ namespace libxim {
          * @param hWnd the window to create InputContext
          * @return std::shared_ptr<InputContext>
          */
-        virtual std::shared_ptr<IngameIME::InputContext> getInputContext(void* window, ...) override
+        virtual std::shared_ptr<InputContext> getInputContext(void* window, ...) override
         {
             auto ctx = std::make_shared<InputContextImpl>(display, reinterpret_cast<Window>(window));
             return ctx;

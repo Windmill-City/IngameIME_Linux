@@ -5,8 +5,8 @@
 #include "InputContext.hpp"
 #include "InputProcessor.hpp"
 
-namespace libwl {
-    class InputContextImpl : public IngameIME::InputContext {
+namespace IngameIME::wl {
+    class InputContextImpl : public InputContext {
       protected:
         wl_surface*        surface;
         zwp_text_input_v3* textInput;

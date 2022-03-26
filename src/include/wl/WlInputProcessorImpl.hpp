@@ -6,14 +6,14 @@
 #include "IngameIME.hpp"
 #include "InputProcessor.hpp"
 
-namespace libwl {
-    class InputProcessorImpl : public IngameIME::InputProcessor {
+namespace IngameIME::wl {
+    class InputProcessorImpl : public InputProcessor {
       public:
         InputProcessorImpl()
         {
-            type = IngameIME::InputProcessorType::TextService;
+            type = InputProcessorType::TextService;
 
-            auto locale    = std::make_shared<IngameIME::Locale>();
+            auto locale    = std::make_shared<Locale>();
             locale->locale = convert(setlocale(LC_ALL, ""));
             locale->name   = format(L"[locale: %ls", locale->locale.c_str());
             this->locale   = locale;

@@ -2,7 +2,8 @@
     "cSpell.words": [
         "CPACK",
         "Ingame",
-        "libwl"
+        "libwl",
+        "fcitx"
     ],
     "files.associations": {
         "stop_token": "cpp",

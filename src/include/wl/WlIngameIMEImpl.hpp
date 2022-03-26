@@ -5,8 +5,8 @@
 
 #include "WlInputProcessorImpl.hpp"
 
-namespace libwl {
-    class GlobalImpl : public IngameIME::Global {
+namespace IngameIME::wl {
+    class GlobalImpl : public Global {
       protected:
         wl_display*                                     display;
         std::pair<wl_seat*, uint32_t>                   seat;
@@ -80,7 +80,7 @@ namespace libwl {
          *
          * @return std::shared_ptr<InputProcessor>
          */
-        virtual std::shared_ptr<const IngameIME::InputProcessor> getActiveInputProcessor() const override
+        virtual std::shared_ptr<const InputProcessor> getActiveInputProcessor() const override
         {
             return std::make_shared<InputProcessorImpl>();
         }
@@ -90,9 +90,9 @@ namespace libwl {
          *
          * @return std::list<std::shared_ptr<InputProcessor>>
          */
-        virtual std::list<std::shared_ptr<const IngameIME::InputProcessor>> getInputProcessors() const override
+        virtual std::list<std::shared_ptr<const InputProcessor>> getInputProcessors() const override
         {
-            std::list<std::shared_ptr<const IngameIME::InputProcessor>> result;
+            std::list<std::shared_ptr<const InputProcessor>> result;
             return result;
         }
 
@@ -102,7 +102,7 @@ namespace libwl {
          * @param hWnd the window to create InputContext
          * @return std::shared_ptr<InputContext>
          */
-        virtual std::shared_ptr<IngameIME::InputContext> getInputContext(void* surface, ...) override
+        virtual std::shared_ptr<InputContext> getInputContext(void* surface, ...) override
         {
             return std::make_shared<InputContextImpl>(
                 inputMgr.first, seat.first, reinterpret_cast<wl_surface*>(surface));

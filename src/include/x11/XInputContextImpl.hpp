@@ -4,15 +4,15 @@
 #include "InputContext.hpp"
 #include "InputProcessor.hpp"
 
-namespace libxim {
-    class InputContextImpl : public IngameIME::InputContext {
+namespace IngameIME::x {
+    class InputContextImpl : public InputContext {
       protected:
         Display* display;
         Window   window;
         XIM      xim{nullptr};
         XIC      xic{nullptr};
 
-        IngameIME::PreEditContext ctx;
+        PreEditContext ctx;
         friend class CompositionImpl;
 
         bool activated{false};

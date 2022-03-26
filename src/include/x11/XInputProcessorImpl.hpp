@@ -8,17 +8,17 @@
 
 #include "StringUtil.hpp"
 
-namespace libxim {
-    class InputProcessorImpl : public IngameIME::InputProcessor {
+namespace IngameIME::x {
+    class InputProcessorImpl : public InputProcessor {
       protected:
         XIM xim;
 
       public:
         InputProcessorImpl(XIM xim) : xim(xim)
         {
-            type = IngameIME::InputProcessorType::TextService;
+            type = InputProcessorType::TextService;
 
-            auto locale    = std::make_shared<IngameIME::Locale>();
+            auto locale    = std::make_shared<Locale>();
             locale->locale = convert(XLocaleOfIM(xim));
             locale->name   = format(L"[locale: %s]", locale->locale.c_str());
             this->locale   = locale;

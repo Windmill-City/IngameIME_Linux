@@ -5,8 +5,8 @@
 
 #include "XInputContextImpl.hpp"
 
-namespace libxim {
-    struct InternalRect : public IngameIME::PreEditRect
+namespace IngameIME::x {
+    struct InternalRect : public PreEditRect
     {
         operator XRectangle()
         {
@@ -18,7 +18,7 @@ namespace libxim {
             return rect;
         }
     };
-    class CompositionImpl : public IngameIME::Composition {
+    class CompositionImpl : public Composition {
       protected:
         InputContextImpl* inputCtx;
 
@@ -26,7 +26,7 @@ namespace libxim {
         static int PreeditStartCallback(XIC ic, XPointer client_data, XPointer call_data)
         {
             auto inputCtx = reinterpret_cast<InputContextImpl*>(client_data);
-            inputCtx->comp->IngameIME::PreEditCallbackHolder::runCallback(IngameIME::CompositionState::Begin, nullptr);
+            inputCtx->comp->PreEditCallbackHolder::runCallback(CompositionState::Begin, nullptr);
             // Max length of Preedit
             return 64;
         }
@@ -44,7 +44,7 @@ namespace libxim {
                 inputCtx->ctx.content =
                     convert(std::string(call_data->text->string.multi_byte, call_data->text->length));
 
-            inputCtx->comp->IngameIME::PreEditCallbackHolder::runCallback(IngameIME::CompositionState::Update,
+            inputCtx->comp->PreEditCallbackHolder::runCallback(CompositionState::Update,
                                                                           &inputCtx->ctx);
         }
 
@@ -52,14 +52,14 @@ namespace libxim {
         {
             auto inputCtx          = reinterpret_cast<InputContextImpl*>(client_data);
             inputCtx->ctx.selStart = inputCtx->ctx.selEnd = call_data->position;
-            inputCtx->comp->IngameIME::PreEditCallbackHolder::runCallback(IngameIME::CompositionState::Update,
+            inputCtx->comp->PreEditCallbackHolder::runCallback(CompositionState::Update,
                                                                           &inputCtx->ctx);
         }
 
         static void PreeditDoneCallback(XIC ic, XPointer client_data, XPointer call_data)
         {
             auto inputCtx = reinterpret_cast<InputContextImpl*>(client_data);
-            inputCtx->comp->IngameIME::PreEditCallbackHolder::runCallback(IngameIME::CompositionState::End, nullptr);
+            inputCtx->comp->PreEditCallbackHolder::runCallback(CompositionState::End, nullptr);
         }
 
         static void GeometryCallback(XIC ic, XPointer client_data, XPointer call_data)
@@ -67,7 +67,7 @@ namespace libxim {
             auto inputCtx = reinterpret_cast<InputContextImpl*>(client_data);
 
             InternalRect rect;
-            inputCtx->comp->IngameIME::PreEditRectCallbackHolder::runCallback(rect);
+            inputCtx->comp->PreEditRectCallbackHolder::runCallback(rect);
             XSetICValues(inputCtx->xic, XNArea, rect, NULL);
         }
 

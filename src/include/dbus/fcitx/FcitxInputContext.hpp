@@ -1,20 +1,26 @@
 #pragma once
-#include <dbus/dbus.h>
-
 #include "InputContext.hpp"
 #include "InputProcessor.hpp"
 
-namespace libdbus {
-    class InputContextImpl : public IngameIME::InputContext {
+#include "FcitxService.hpp"
+
+namespace IngameIME::dbus {
+    using namespace org::fcitx;
+    class FcitxInputContext : public InputContext {
       protected:
+        Fcitx::InputContext ctx;
+
         bool activated{false};
         bool fullscreen{false};
 
-        friend class CompositionImpl;
+        friend class FcitxCompositionImpl;
 
       public:
-        InputContextImpl();
-        ~InputContextImpl() {}
+        FcitxInputContext();
+        ~FcitxInputContext()
+        {
+            ctx.DestroyIC();
+        }
 
       public:
         /**

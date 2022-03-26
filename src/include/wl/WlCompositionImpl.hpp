@@ -4,21 +4,21 @@
 
 #include "WlInputContextImpl.hpp"
 
-namespace libwl {
-    class CompositionImpl : public IngameIME::Composition {
+namespace IngameIME::wl {
+    class CompositionImpl : public Composition {
       protected:
         InputContextImpl* inputCtx;
 
         bool composing{false};
 
-        std::pair<IngameIME::PreEditContext, bool> ctx;
-        std::pair<std::string, bool>               commit;
+        std::pair<PreEditContext, bool> ctx;
+        std::pair<std::string, bool>    commit;
 
       protected:
         void refreshPreEditRect()
         {
-            IngameIME::PreEditRect rect;
-            IngameIME::PreEditRectCallbackHolder::runCallback(rect);
+            PreEditRect rect;
+            PreEditRectCallbackHolder::runCallback(rect);
             zwp_text_input_v3_set_cursor_rectangle(
                 inputCtx->textInput, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
             zwp_text_input_v3_commit(inputCtx->textInput);
@@ -95,21 +95,20 @@ namespace libwl {
             if (comp->ctx.second) {
                 if (!comp->composing) {
                     comp->composing = true;
-                    comp->IngameIME::PreEditCallbackHolder::runCallback(IngameIME::CompositionState::Begin, nullptr);
+                    comp->PreEditCallbackHolder::runCallback(CompositionState::Begin, nullptr);
                 }
 
-                comp->IngameIME::PreEditCallbackHolder::runCallback(IngameIME::CompositionState::Update,
-                                                                    &comp->ctx.first);
+                comp->PreEditCallbackHolder::runCallback(CompositionState::Update, &comp->ctx.first);
                 comp->refreshPreEditRect();
                 comp->ctx.second = false;
             }
             else {
-                comp->IngameIME::PreEditCallbackHolder::runCallback(IngameIME::CompositionState::End, nullptr);
+                comp->PreEditCallbackHolder::runCallback(CompositionState::End, nullptr);
                 comp->composing = false;
             }
 
             if (comp->commit.second) {
-                comp->IngameIME::CommitCallbackHolder::runCallback(convert(comp->commit.first));
+                comp->CommitCallbackHolder::runCallback(convert(comp->commit.first));
                 comp->commit.second = false;
             }
         }
@@ -140,4 +139,4 @@ namespace libwl {
             }
         }
     };
-}// namespace libwl
+}// namespace IngameIME::wl

@@ -16,4 +16,4 @@
 	url = testWnd/glfw
 [submodule "simppl"]
 	path = simppl
-	url = git@github.com:martinhaefner/simppl.git
+	url = git@github.com:Windmill-City/simppl.git
