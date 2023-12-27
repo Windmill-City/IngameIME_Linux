@@ -14,6 +14,3 @@
 	url = IngameIME-Common
 [submodule "git@github.com:glfw/glfw.git"]
 	url = testWnd/glfw
-[submodule "simppl"]
-	path = simppl
-	url = git@github.com:Windmill-City/simppl.git
