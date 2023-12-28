@@ -4,3 +4,13 @@
 [submodule "testWnd/glfw"]
 	path = testWnd/glfw
 	url = https://github.com/glfw/glfw
+[submodule "fcitx5"]
+	path = fcitx5
+	url = git@github.com:fcitx/fcitx5.git
+[submodule "ibus"]
+	path = ibus
+	url = git@github.com:ibus/ibus.git
+[submodule "git@github.com:Windmill-City/IngameIME-Common.git"]
+	url = IngameIME-Common
+[submodule "git@github.com:glfw/glfw.git"]
+	url = testWnd/glfw
