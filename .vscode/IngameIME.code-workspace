@@ -5,6 +5,7 @@
 			"path": ".."
 		},
 		{
+			"name": "IngameIME-Test",
 			"path": "../IngameIME-Common/testWnd"
 		}
 	],
@@ -72,6 +73,9 @@
 			"xfacet": "cpp",
 			"xstddef": "cpp",
 			"xtr1common": "cpp"
-		}
+		},
+		"cSpell.words": [
+			"FCITX"
+		]
 	}
 }

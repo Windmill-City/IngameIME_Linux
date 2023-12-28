@@ -6,6 +6,9 @@ project(IngameIME-Linux)
 # ##########################
 set(CMAKE_CXX_STANDARD 17)
 
+# For sdbus-cpp
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # ##########################
 # Find Packages
 # ##########################
@@ -13,6 +16,7 @@ list(APPEND CMAKE_MODULE_PATH ${ECM_FIND_MODULE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
 
 # IngameIME-Interface
 add_subdirectory(IngameIME-Common EXCLUDE_FROM_ALL)
+add_subdirectory(sdbus-cpp EXCLUDE_FROM_ALL)
 
 # ##############################################################################
 # Get Version String
@@ -42,6 +46,8 @@ target_include_directories(IngameIME_Static PRIVATE include)
 target_include_directories(IngameIME_Shared PRIVATE include)
 target_link_libraries(IngameIME_Static PUBLIC IngameIME)
 target_link_libraries(IngameIME_Shared PUBLIC IngameIME)
+target_link_libraries(IngameIME_Static PRIVATE sdbus-c++)
+target_link_libraries(IngameIME_Shared PRIVATE sdbus-c++)
 
 # ##############################################################################
 # Packaging

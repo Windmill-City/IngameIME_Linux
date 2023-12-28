@@ -14,3 +14,6 @@
 	url = IngameIME-Common
 [submodule "git@github.com:glfw/glfw.git"]
 	url = testWnd/glfw
+[submodule "sdbus-cpp"]
+	path = sdbus-cpp
+	url = git@github.com:Kistler-Group/sdbus-cpp.git
